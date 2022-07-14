@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen>
     controller.forward();
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
       }
     });
   }
@@ -34,6 +34,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
   }
 
   @override
