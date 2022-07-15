@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:koolmind_task_app/screens/home_screen.dart';
+import 'package:koolmind_task_app/screens/main_screen.dart';
 import 'package:koolmind_task_app/screens/splash_screen.dart';
 
 void main() {
@@ -15,7 +17,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(),
-      home: const SplashScreen(),
+      home: SplashScreen(),
+      routes: {
+        MainScreen.routName:(context) => const MainScreen(),
+      },
     );
   }
 }

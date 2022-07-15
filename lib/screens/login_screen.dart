@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:koolmind_task_app/screens/main_screen.dart';
+import 'package:koolmind_task_app/utils/globalveriable.dart';
 import 'package:koolmind_task_app/widgets/coustom_button.dart';
 import 'package:koolmind_task_app/widgets/coustom_textfeild.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -14,12 +19,44 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordcontroller = TextEditingController();
 
   bool _isHidden = true;
+  bool _isloading = false;
 
   void _togalPasswordView() {
     setState(() {
       _isHidden = !_isHidden;
     });
   }
+
+  void login(String email, String password) async {
+
+    setState(() {
+      if(_emailcontroller.text.isEmpty || _passwordcontroller.text.isEmpty){
+        _isloading = false;
+        showSnackBar("Pls Enter valid information", context);
+      }else {
+        _isloading = true;
+      }
+    });
+    try {
+      http.Response response = await http.post(
+          Uri.parse("http://koolmindapps.com/khomes/api/v1/auth/login"),
+          body: {
+            'email': email,
+            'password': password,
+            'device': "android",
+            'device_token': "abc123"
+          }
+      );
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body.toString());
+        Navigator.pushNamed(context, MainScreen.routName);
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,28 +143,66 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: size.height * 0.08,
                   ),
-                  CoustomButton(widget:  Text(
-                    "Login",
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 20),
-                  ),),
-                  SizedBox(
-                    height: 40,
+                  InkWell(
+                    onTap: (){login(_emailcontroller.text.toString(), _passwordcontroller.text.toString());},
+                    child: _isloading ? const Center(
+                      child: CircularProgressIndicator(),
+                    ) : CoustomButton(
+                      color: Colors.green.shade700,
+                      widget: const Text(
+                        "Login",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20),
+                      ),
+                    ),
                   ),
-                  Align(
+                  SizedBox(
+                    height: size.height * 0.07,
+                  ),
+                  const Align(
                     alignment: Alignment.center,
                     child: Text(
                       "or sign in with",
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
-                  CoustomButton(widget: Expanded(
-                    child: Row(
-                      children: [
-                        Image(image: AssetImage("assets/images/google_logo.png",), height: 40, width: 40,),
-                        Text("Google", style: TextStyle(color: Colors.black),)
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  CoustomButton(
+                    widget: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Image(
+                          image: AssetImage(
+                            "assets/images/google_logo.png",
+                          ),
+                          fit: BoxFit.fill,
+                        ),
+                        SizedBox(width: 5,),
+                        Text(
+                          "Google",
+                          style: TextStyle(color: Colors.black),
+                        )
                       ],
                     ),
-                  ))
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: size.height * 0.07,),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: const [
+                        Text("Create account", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),),
+                        SizedBox(width: 5,),
+                        Icon(Icons.keyboard_arrow_right_sharp)
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),

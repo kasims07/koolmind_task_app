@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
-import 'package:koolmind_task_app/screens/loginScreen.dart';
+import 'package:koolmind_task_app/screens/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
